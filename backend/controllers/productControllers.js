@@ -77,8 +77,6 @@ const updateProduct = (req, res) => {
   }
 
   const { name, price, desc } = req.body;
-  if (name) product.name = name;
-  if (price) product.price = price;
 
   const newProduct = {
     name,
@@ -98,11 +96,29 @@ const updateProduct = (req, res) => {
   res.send(response);
 };
 
-// @desc Delete a product
-// @route DELETE /api/products/:id
 const deleteProduct = (req, res) => {
-  products = products.filter((p) => p.id !== parseInt(req.params.id));
-  res.json({ message: "Product deleted successfully" });
+  const productId = req.params.id;
+
+  const product = products.find((prd) => prd.id === parseInt(productId));
+  console.log(product)
+
+  if (!product) {
+    const response = {
+      success: false,
+      message: `Product not found`,
+    };
+    return res.status(404).send(response);
+  }
+
+  const newProducts = products.filter((prd) => prd.id !== product.id);
+  products = newProducts;
+
+  const response = {
+    success: true,
+    message: `Product is successfully deleted`,
+  };
+
+  res.send(response);
 };
 
 module.exports = {
